@@ -1,8 +1,19 @@
-// We use 4-character tabstops, so IN VIM:  <esc>:set ts=4 sw=4 <cr>
-// ...that's: ESCAPE key, colon key, then "s-e-t SPACE key t-s-=-4 SPACE key s-w-=-4 CARRIAGE RETURN key"
+// We use 4-character tabstops, so IN VIM:  <esc>:set ts=4 sw=4 sts=4<cr>
+// ...that's: ESCAPE key, colon key, then
+// "s-e-t SPACE key t-s-=-4 SPACE key s-w-=-4 SPACE key s-t-s=-4 CARRIAGE RETURN key"
 /*
- AdaEncoder.h - A library for reading Lady Ada's or Sparkfun's rotary encoder.
+ AdaEncoder - A library for reading Lady Ada's or Sparkfun's rotary encoder.
  Should work for any rotary encoder with 2 pins (4 states).
+
+Version 0.8-rc2 Thu Jul 31 12:15:01 CDT 2014
+License for much of my Arduino work is now covered by the Apache 2.0 license. I just
+want to put my code out there. I was inspired by the following Ted talk:
+https://www.youtube.com/watch?feature=player_detailpage&v=R9g3Q-qvtss#t=1160
+As Itay Talgam's friend Peter says, "If you love something, give it away."
+
+The versioning has been converted to follow the Linux Kernel style:
+On the way to version X.Y, you will see versions -rc1, -rc2, -rc3, etc., until the
+code is sufficiently stable to call it "version X.Y".
 
 Version 0.7 Tue Nov 20 17:56:29 CST 2012
 Now works with the latest ooPinChangeInt. Should be much more reliable.
