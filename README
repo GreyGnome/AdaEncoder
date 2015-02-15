@@ -4,6 +4,10 @@ Note that you MUST connect the two pins for your rotary encoder to 2 pins on the
 on the ATmega chip. If you do not, your sketch will simply reset. I should probably remove
 this restriction one day.
 
+ALWAYS make sure you are using the latest version of the ooPinChangeInt library. Check this
+page for the latest version and status:
+http://code.google.com/p/oopinchangeint/
+
 These are the PORTs on the ATmega328:
  * Arduino Pins     PORT
  * ------------     ----
