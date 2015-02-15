@@ -5,6 +5,9 @@
  AdaEncoder - A library for reading Lady Ada's or Sparkfun's rotary encoder.
  Should work for any rotary encoder with 2 pins (4 states).
 
+Version 0.9-rc1 Sun Feb 15 06:11:58 CST 2015
+Fixes for the ATmega2560. This had not been working at all on most pins.
+
 Version 0.8-rc2 Thu Jul 31 12:15:01 CDT 2014
 License for much of my Arduino work is now covered by the Apache 2.0 license. I just
 want to put my code out there. I was inspired by the following Ted talk:

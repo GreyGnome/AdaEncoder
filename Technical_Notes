@@ -1,0 +1,53 @@
+//  The Pin map below is copyright by the Arduino people.  I include it here so I can remember stuff as I code.
+// ATMEL ATMEGA8 & 168 / ARDUINO
+// //
+// //                  +-\/-+
+// //            PC6  1|    |28  PC5 (AI 5)
+// //      (D 0) PD0  2|    |27  PC4 (AI 4)
+// //      (D 1) PD1  3|    |26  PC3 (AI 3)
+// //      (D 2) PD2  4|    |25  PC2 (AI 2)
+// // PWM+ (D 3) PD3  5|    |24  PC1 (AI 1)
+// //      (D 4) PD4  6|    |23  PC0 (AI 0)
+// //            VCC  7|    |22  GND
+// //            GND  8|    |21  AREF
+// //            PB6  9|    |20  AVCC
+// //            PB7 10|    |19  PB5 (D 13)
+// // PWM+ (D 5) PD5 11|    |18  PB4 (D 12)
+// // PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
+// //      (D 7) PD7 13|    |16  PB2 (D 10) PWM
+// //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
+// //                  +----+
+// 
+// const static uint8_t A0 = 14;
+// const static uint8_t A1 = 15;
+// const static uint8_t A2 = 16;
+// const static uint8_t A3 = 17;
+// const static uint8_t A4 = 18;
+// const static uint8_t A5 = 19;
+// const static uint8_t A6 = 20;
+// const static uint8_t A7 = 21;
+//
+// Macros to find pins:
+// #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
+// #define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
+// #define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )
+// #define analogInPinToBit(P) (P)
+// #define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
+// #define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_input_PGM + (P))) )
+// #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
+
+/*
+struct encoder {
+    volatile uint8_t* port;
+
+    uint8_t bitA;
+    uint8_t bitB;
+
+    uint8_t turning;    // Flag to keep track of turning state
+    int8_t clicks;      // Counter to indicate cumulative clicks in either direction
+    int8_t direction;   // indicator
+
+    char id;
+
+    encoder *next;
+};*/

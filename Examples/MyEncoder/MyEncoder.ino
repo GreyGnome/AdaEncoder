@@ -32,8 +32,8 @@ ByteBuffer printBuffer(200);
 
 #define ENCA_a 2
 #define ENCA_b 3
-#define ENCB_a A3
-#define ENCB_b A4
+#define ENCB_a A0
+#define ENCB_b A1
 
 AdaEncoder encoderA = AdaEncoder('a', ENCA_a, ENCA_b);
 AdaEncoder encoderB = AdaEncoder('b', ENCB_a, ENCB_b);

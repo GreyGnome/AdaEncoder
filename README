@@ -1,1 +1,28 @@
 README for AdaEncoder
+
+Note that you MUST connect the two pins for your rotary encoder to 2 pins on the same PORT
+on the ATmega chip. If you do not, your sketch will simply reset. I should probably remove
+this restriction one day.
+
+These are the PORTs on the ATmega328:
+ * Arduino Pins     PORT
+ * ------------     ----
+ * Digital 0-7      D
+ * Digital 8-13     B
+ * Analog  0-5      C   (== digital pins 14-19)
+
+ATMEGA2560 Pin Change Interrupts, pins and PORTs:
+
+    Arduino              Arduino              Arduino
+      Pin*  PORT PCINT     Pin   PORT PCINT     Pin   PORT PCINT
+      A8     PK0  16       10     PB4   4       SS     PB0   0
+      A9     PK1  17       11     PB5   5       SCK    PB1   1
+     A10     PK2  18       12     PB6   6       MOSI   PB2   2
+     A11     PK3  19       13     PB7   7     MISO   PB3   3
+     A12     PK4  20       14     PJ1  10
+     A13     PK5  21       15     PJ0   9
+     A14     PK6  22        0     PE0   8 - this one is a little odd.*
+     A15     PK7  23
+
+* Note: Arduino Pin 0 is PE0 (PCINT8), which is RX0. Also, it is the only other
+pin on another port on PCI1. Therefore, this pin is not supported by this library.

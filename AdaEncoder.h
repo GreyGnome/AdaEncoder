@@ -25,8 +25,9 @@ limitations under the License.
 /* Behavior goes like this:
  * 11 is the detent position for an encoder.  So the encoder will go through an order like this:
  *   11 <=> 01 <=> 00 <=> 10 <=> 11    OR    11 <=> 10 <=> 00 <=> 01 <=> 11
- * depending on direction.  The <=> represent a possible bounce situation.  Therefore, we keep track of the
- * encoder behavior in a binary number called (appropriately enough) encoder.  Encoder has 8 bits.
+ * depending on direction.  The <=> represent a possible bounce situation.  Therefore, we keep track
+ * of the * encoder behavior in a binary number called (appropriately enough) encoder.  Encoder has
+ * 8 bits.
  * 
  * The process starts when we get an interrupt and read the encoder pins.
  * - Reading: 11 is either a bounce back to start, or the final reading:
@@ -36,7 +37,8 @@ limitations under the License.
  *	- "encoder" is set to xxxx1111.
  * - Reading: 01 or 10:
  *	- If "encoder" is currently xxxx1111, set it to 1101 or 1110, appropriately.
- *	- If "encoder" is xxxx00xy, you'd either bounced or moved to the next position, which means we get closer to detent.  No effect.
+ *	- If "encoder" is xxxx00xy, you'd either bounced or moved to the next position, which means
+ *	we get closer to detent.  No effect.
  * - Reading: 00: we are in the middle.  AND encoder with xxxx0011
  */
 
@@ -63,60 +65,44 @@ limitations under the License.
   #include <wiring.h>
 #endif
 
-//  The Pin map below is copyright by the Arduino people.  I include it here so I can remember stuff as I code.
-// ATMEL ATMEGA8 & 168 / ARDUINO
-// //
-// //                  +-\/-+
-// //            PC6  1|    |28  PC5 (AI 5)
-// //      (D 0) PD0  2|    |27  PC4 (AI 4)
-// //      (D 1) PD1  3|    |26  PC3 (AI 3)
-// //      (D 2) PD2  4|    |25  PC2 (AI 2)
-// // PWM+ (D 3) PD3  5|    |24  PC1 (AI 1)
-// //      (D 4) PD4  6|    |23  PC0 (AI 0)
-// //            VCC  7|    |22  GND
-// //            GND  8|    |21  AREF
-// //            PB6  9|    |20  AVCC
-// //            PB7 10|    |19  PB5 (D 13)
-// // PWM+ (D 5) PD5 11|    |18  PB4 (D 12)
-// // PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
-// //      (D 7) PD7 13|    |16  PB2 (D 10) PWM
-// //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
-// //                  +----+
-// 
-// const static uint8_t A0 = 14;
-// const static uint8_t A1 = 15;
-// const static uint8_t A2 = 16;
-// const static uint8_t A3 = 17;
-// const static uint8_t A4 = 18;
-// const static uint8_t A5 = 19;
-// const static uint8_t A6 = 20;
-// const static uint8_t A7 = 21;
-//
-// Macros to find pins:
-// #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
-// #define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
-// #define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )
-// #define analogInPinToBit(P) (P)
-// #define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
-// #define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_input_PGM + (P))) )
-// #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
-
-/*
-struct encoder {
-    volatile uint8_t* port;
-
-    uint8_t bitA;
-    uint8_t bitB;
-
-    uint8_t turning;    // Flag to keep track of turning state
-    int8_t clicks;      // Counter to indicate cumulative clicks in either direction
-    int8_t direction;   // indicator
-
-    char id;
-
-    encoder *next;
-};*/
-
+/* Class AdaEncoder.
+ * Usage:
+ * AdaEncoder encoderA = AdaEncoder('a', encodera_pinA, encodera_pinB);
+ *
+ * Constructor Arguments:
+ * - id: a single char that identifies this encoder
+ * - pinA: The pin on the Arduino that one side of the encoder plugs into.  Turning in this
+ *   direction means we're turning clockwise.
+ * - pinB: The Arduino pin connected to the encoder; this is the counterclockwise direction.
+ *
+ *   Pins A and B MUST be on the same PORT!
+ *
+ * On ATmega328-based Arduinos, the pins can be any of the digital pins 0-13, or any of the
+ * analog pins A0-A5 (aka, 14-19). You can specify the analog pins as A0, A1, A2, ... etc.
+ *
+ * The pins must be paired in the same port.  In summary this means that the two pins should
+ * together be grouped within a single port; ie, if you connect pinA to digital pin 9, you
+ * must connect pinB to digital pin 8 or 10-13.  See this table for the ATmega168/328:
+ * Arduino Pins     PORT
+ * ------------     ----
+ * Digital 0-7      D
+ * Digital 8-13     B
+ * Analog  0-5      C   (== digital pins 14-19)
+ * 
+ * ATMEGA2560 Pin Change Interrupts
+    Arduino              Arduino              Arduino
+      Pin*  PORT PCINT     Pin   PORT PCINT     Pin   PORT PCINT
+      A8     PK0  16       10     PB4   4       SS     PB0   0
+      A9     PK1  17       11     PB5   5       SCK    PB1   1
+     A10     PK2  18       12     PB6   6       MOSI   PB2   2
+     A11     PK3  19       13     PB7   7       MISO   PB3   3
+     A12     PK4  20       14     PJ1  10
+     A13     PK5  21       15     PJ0   9
+     A14     PK6  22        0     PE0   8 - this one is a little odd.*
+     A15     PK7  23
+* Note: Arduino Pin 0 is PE0 (PCINT8), which is RX0. Also, it is the only other
+pin on another port on PCI1. It is not supported by this library.
+ */
 class AdaEncoder : public CallBackInterface {
  public:
 	AdaEncoder(char _id, uint8_t _pinA, uint8_t _pinB) {
@@ -130,8 +116,8 @@ class AdaEncoder : public CallBackInterface {
 		addEncoder(_id, _pinA, _pinB);
 		
 	}
-	int8_t query(); // BUG under pre-0.7 versions (had uint8_t)
-	int8_t getClicks(); // BUG under pre-0.7 versions (had uint8_t)
+	int8_t query();
+	int8_t getClicks();
 	char getID();
 
 	static AdaEncoder *getFirstEncoder();

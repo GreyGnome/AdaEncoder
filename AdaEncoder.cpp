@@ -139,16 +139,16 @@ AdaEncoder *AdaEncoder::getFirstEncoder() {
  * addEncoder
  * Arguments:
  * - id: a single char that identifies this encoder
- * - pinA: The pin on the Arduino that one side of the encoder plugs into.  Turning in this direction means we're
- *   turning clockwise.
+ * - pinA: The pin on the Arduino that one side of the encoder plugs into.  Turning in this
+ *   direction means we're turning clockwise.
  * - pinB: The Arduino pin connected to the encoder; this is the counterclockwise direction.
  *
- * The pins can be any of the digital pins 0-13, or any of the analog pins A0-A5 (aka, 14-19).  You can specify the
- * analog pins as A0, A1, A2, ... etc.
+ * On ATmega328-based Arduinos, the pins can be any of the digital pins 0-13, or any of the
+ * analog pins A0-A5 (aka, 14-19). You can specify the analog pins as A0, A1, A2, ... etc.
  *
- * The pins must be paired in the same port, as described above.  In summary this means that the two pins should
- * together be grouped within a single port; ie, if you connect pinA to digital pin 9, you must connect pinB to
- * digital pin 8 or 10-13.  See this table:
+ * The pins must be paired in the same port, as described above.  In summary this means that
+ * the two pins should together be grouped within a single port; ie, if you connect pinA to
+ * digital pin 9, you must connect pinB to digital pin 8 or 10-13.  See this table:
  * Arduino Pins		PORT
  * ------------		----
  * Digital 0-7		D
@@ -172,12 +172,12 @@ void AdaEncoder::addEncoder(char _id, uint8_t _pinA, uint8_t _pinB)
 	printBuffer.putString(getPSTR(" *\n"));
 #endif
 
-	// error checking
-	if (pinA == pinB) return;  // No! silly
-	if (pinA < 8 && pinB > 7) return; // No! different ports
-	if ((pinA > 7 && pinA < 14) && (pinB < 8 || pinB > 13)) return; // No! different ports
-	if (pinA > 13 && pinB < 14) return; // No! different ports
-	if (pinA > 19 || pinB > 19) return; // No! out of band
+	// error checking. At the moment, A and B MUST be on the same port, so
+    // do not allow different ports. Reset the sketch instead.
+	if (pinA == pinB) asm volatile ("  jmp 0");  // No! silly
+    if (digital_pin_to_port_PGM[pinA] != digital_pin_to_port_PGM[pinB]) {
+        asm volatile ("  jmp 0"); // The reset the sketch
+    };
 
 	turning=0;
 	clicks=0;
